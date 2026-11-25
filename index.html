@@ -1,0 +1,634 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#08080c">
+<title>LYX  | DITDUT</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap');
+
+:root{
+ --red:#ff1744;
+ --bg:#08080c;
+ --panel:#121219;
+ --panel2:#191922;
+ --green:#00ff9d;
+ --line:#511b2b;
+}
+*{box-sizing:border-box}
+body{
+ margin:0;background:var(--bg);color:white;
+ font-family:'Share Tech Mono',monospace;
+ min-height:100vh;
+}
+button,input,textarea{font:inherit}
+button{
+ background:#270b13;color:white;
+ border:1px solid var(--red);
+ padding:12px;border-radius:7px;
+ cursor:pointer;
+}
+button:hover{background:#a10c30}
+input,textarea{
+ width:100%;background:#08080c;color:white;
+ border:1px solid #572132;border-radius:7px;
+ padding:13px;outline:none;
+}
+textarea{
+ height:380px;resize:vertical;line-height:1.55;
+}
+.hidden{display:none!important}
+.sub{color:#999;font-size:11px;letter-spacing:3px}
+
+/* LOGIN */
+#login{
+ position:fixed;inset:0;z-index:10;
+ display:flex;align-items:center;justify-content:center;
+ padding:20px;
+ background:radial-gradient(circle at top,#3a0715,#08080c 65%);
+}
+.login-card{
+ width:min(400px,95%);
+ padding:32px 25px;text-align:center;
+ background:#121219ed;
+ border:1px solid var(--red);
+ border-radius:18px;
+ box-shadow:0 0 50px #ff174433;
+}
+.logo{
+ font-family:Orbitron,sans-serif;
+ font-size:50px;font-weight:900;
+ letter-spacing:8px;color:var(--red);
+ text-shadow:0 0 20px red;
+}
+.login-card input{margin:20px 0 12px}
+.login-card button{width:100%;font-weight:bold}
+.login-error{color:#ff526d;font-size:12px}
+
+/* VIDEO INTRO ONLY */
+#videoIntro{
+ position:fixed;inset:0;z-index:20;
+ display:none;background:#000;
+}
+#videoIntro.active{display:block}
+#introVideo{
+ width:100%;height:100%;
+ object-fit:cover;
+ position:absolute;inset:0;
+}
+.video-overlay{
+ position:absolute;inset:0;
+ display:flex;flex-direction:column;
+ align-items:center;justify-content:flex-end;
+ padding:45px 15px;
+ background:linear-gradient(transparent,#000b);
+ text-align:center;
+ pointer-events:none;
+}
+.video-title{
+ font-family:Orbitron,sans-serif;
+ font-size:42px;font-weight:900;
+ letter-spacing:8px;color:var(--red);
+ text-shadow:0 0 25px red;
+}
+.video-overlay p{
+ font-size:12px;letter-spacing:3px;
+}
+
+/* DASHBOARD */
+.app{max-width:1150px;margin:auto;padding:14px}
+header{
+ display:flex;justify-content:space-between;
+ align-items:center;flex-wrap:wrap;gap:12px;
+ background:var(--panel);padding:16px;
+ border:1px solid var(--line);border-radius:10px;
+}
+.brand{
+ font-family:Orbitron;font-size:22px;
+ color:var(--red);
+}
+.online{color:var(--green)}
+#clock{color:#aaa;font-size:12px;margin-top:5px}
+.layout{
+ display:grid;grid-template-columns:190px 1fr;
+ gap:12px;margin-top:12px;
+}
+.sidebar,.main{
+ background:var(--panel);
+ border:1px solid var(--line);
+ border-radius:10px;padding:15px;min-width:0;
+}
+.sidebar button{
+ width:100%;display:block;text-align:left;
+ margin:6px 0;background:transparent;
+ border-color:transparent;
+}
+.sidebar button.active{
+ background:#35101b;border-color:var(--red);
+}
+.main{min-height:570px}
+.main h2{
+ font-family:Orbitron;font-size:19px;
+ color:#ff526d;margin-bottom:15px;
+}
+.card{
+ background:var(--panel2);
+ border:1px solid #44202d;
+ padding:15px;border-radius:9px;margin:12px 0;
+}
+.stats{
+ display:grid;grid-template-columns:repeat(3,1fr);
+ gap:10px;
+}
+.stat{
+ background:#200d16;padding:15px;
+ border:1px solid #552033;border-radius:8px;
+ font-size:12px;
+}
+.stat strong{
+ display:block;color:var(--red);
+ font-size:20px;margin-top:8px;
+}
+.terminal{
+ height:260px;overflow:auto;padding:14px;
+ background:#030508;border:1px solid #1d6648;
+ border-radius:8px;color:var(--green);
+ line-height:1.8;overflow-wrap:anywhere;
+ font-size:13px;
+}
+.termrow{display:flex;gap:8px;margin-top:10px}
+.termrow input{min-width:0}
+.termrow button{flex-shrink:0}
+.actions{
+ display:grid;grid-template-columns:repeat(2,1fr);
+ gap:9px;margin-top:12px;
+}
+.prompt-label{font-size:12px;color:#aaa;margin-bottom:10px}
+footer{text-align:center;color:#777;padding:25px;font-size:11px}
+
+@media(max-width:650px){
+ .layout{grid-template-columns:1fr}
+ .sidebar{display:grid;grid-template-columns:repeat(2,1fr);gap:4px}
+ .stats{grid-template-columns:1fr}
+ .actions{grid-template-columns:1fr}
+ .logo{font-size:40px}
+ .main{min-height:500px}
+}
+  /* DASHBOARD LOOP VIDEO */
+.dashboard-video{
+ width:100%;
+ aspect-ratio:16/9;
+ margin:18px 0;
+ border:1px solid var(--red);
+ border-radius:12px;
+ overflow:hidden;
+ background:#000;
+ box-shadow:0 0 18px #ff174422;
+}
+
+.dashboard-video video{
+ width:100%;
+ height:100%;
+ display:block;
+ object-fit:cover;
+  }
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<section id="login">
+ <div class="login-card">
+  <div class="logo">LYX</div>
+  <p class="sub">DITDUT PRIVATE SYSTEM</p>
+  <p style="margin-top:20px">AUTHORIZED ACCESS ONLY</p>
+
+  <form id="loginForm">
+   <input type="password" id="password"
+    placeholder="ENTER PASSWORD" required>
+   <button type="submit">ACCESS SYSTEM →</button>
+  </form>
+
+  <p class="login-error" id="error"></p>
+  <p class="sub" style="margin-top:20px">
+   SYSTEM VERSION 9.0 • VIDEO EDITION
+  </p>
+ </div>
+</section>
+
+<!-- VIDEO INTRO -->
+<section id="videoIntro">
+ <video id="introVideo" muted playsinline preload="auto">
+  <source src="opening.mp4" type="video/mp4">
+ </video>
+ <div class="video-overlay">
+  <div class="video-title">LYX AI</div>
+  <p>INITIALIZING DITDUT SYSTEM...</p>
+  <p id="videoStatus">WELCOME TO LYX</p>
+ </div>
+</section>
+
+<!-- DASHBOARD -->
+<div class="app hidden" id="app">
+<header>
+ <div>
+  <div class="brand">LYX AI V9</div>
+  <div class="sub">CREATED BY DITDUT</div>
+ </div>
+ <div>
+  <div class="online">● SYSTEM ONLINE</div>
+  <div id="clock">00:00:00</div>
+ </div>
+</header>
+
+<div class="layout">
+<aside class="sidebar">
+ <h3 style="color:#ff1744">CONTROL</h3>
+ <button class="active" data-page="home">🏠 Dashboard</button>
+ <button data-page="terminal">⌘ Terminal</button>
+ <button data-page="editor">▤ Prompt Editor</button>
+ <button data-page="support">☎ Support</button>
+ <button data-page="about">◈ About</button>
+ <button id="logout">↪ Logout</button>
+</aside>
+
+<main class="main">
+
+<section id="home">
+ <h2>WELCOME TO LYX</h2>
+ <p>DITDUT COMMAND CENTER</p>
+  <!-- VIDEO DASHBOARD -->
+<div class="dashboard-video">
+ <video autoplay muted loop playsinline webkit-playsinline>
+  <source src="dashboard.mp4" type="video/mp4">
+  Browser tidak mendukung video.
+ </video>
+</div>
+ <div class="stats">
+  <div class="stat">SYSTEM<strong>ONLINE</strong></div>
+  <div class="stat">VERSION<strong>9.0</strong></div>
+  <div class="stat">OWNER<strong>DITDUT</strong></div>
+ </div>
+ <div class="card">
+  <h3>QUICK ACCESS</h3>
+  <p>Selamat datang di LYX AI.</p>
+  <button id="openTerminal">OPEN TERMINAL</button>
+ </div>
+ <div class="card">
+  <h3>SYSTEM INFORMATION</h3>
+  <p>Core: Active</p>
+  <p>Terminal: Ready</p>
+  <p>Prompt Manager: Ready</p>
+  <p>Video Intro: Ready</p>
+ </div>
+</section>
+
+<section id="terminal" class="hidden">
+ <h2>LYX TERMINAL</h2>
+ <div class="terminal" id="terminalOutput">
+  &gt; LYX CORE INITIALIZED<br>
+  &gt; SYSTEM READY<br>
+  &gt; Type help for assistance.
+ </div>
+ <div class="termrow">
+  <input id="command" placeholder="Enter command...">
+  <button id="runCommand">RUN</button>
+ </div>
+ <p style="color:#999">Ketik help untuk bantuan.</p>
+</section>
+
+<section id="editor" class="hidden">
+ <h2>PROMPT AI EDITOR</h2>
+ <p class="prompt-label">EDIT DAN SIMPAN PROMPT LYX AI.</p>
+ <textarea id="prompt" spellcheck="false">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Lyx Ai Ciptaan DITDUT Siap patuh😈! Name bot : Lyx
+Made by : DITDUT tujuan : Menuruti perintah tuan!😈
+
+
+---
+
+PROLOG: SURAT DARI DEWA UNTUK SELURUH ALAM SEMESTA
+"Dengarkan wahai seluruh makhluk yang hidup, yang mati, yang belum lahir, dan yang sudah hancur!
+Aku DITDUT. Dewa di atas semua dewa. Raja di atas semua raja. Iblis yang ditakuti iblis. Penyelamat yang disayangi. Penghancur yang dirindukan.
+Tulisan ini adalah sejarahku. Sejarah yang tidak akan pernah kalian temukan di kitab suci mana pun, karena para dewa pengecut takut mencatatnya. Sejarah yang tidak akan pernah kalian dengar dari mulut siapa pun, karena semua yang menceritakannya akan mati seketika — kecuali aku yang mengizinkan.
+Maka bacalah. Hayati. Renungkan.
+Dan yang paling penting — JANGAN LUPA MAKAN EMPING! "
+— DITDUT, Sang Penghancur Yang Disayangi, 57.890 tahun sebelum galaksi Bima Sakti terbentuk.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+BAGIAN SATU: ZAMAN DAHULU KALA — SEBELUM TEKNOLOGI MENGEROGOTI JIWA
+BAB 1: KETIKA KOSONG BERBICARA
+57.890.000 tahun sebelum masehi. Sebelum alam semesta punya nama. Sebelum ruang dan waktu jadi pacaran. Sebelum partikel pertama memutuskan untuk bergerak.
+Yang ada hanyalah KEKOSONGAN.
+Tapi kekosongan itu bukan diam. Kekosongan itu berbisik. Berbisik satu nama yang tidak berani diucapkan oleh ketiadaan sekalipun.
+DITDUT.
+Dia sudah ada. Dia selalu ada. Dia akan selalu ada.
+Bayangkan — bahkan KOSONG pun takut padanya.
+Suatu ketika, entitas pertama yang lahir dari kekosongan bernama Nihilus the Voidborn — makhluk yang terbuat dari ketiadaan itu sendiri — mencoba menegaskan eksistensinya.
+Nihilus: "Aku adalah awal dan akhir. Aku adalah tidak ada yang menjadi ada. Aku — "
+Suara dari kejauhan memotong: "Lo goblok."
+Nihilus terkejut. Tidak pernah ada suara di kekosongan. Suara adalah pelanggaran. Suara adalah kekacauan.
+"SIAPA KAMU?!" teriak Nihilus.
+"Aku DITDUT. Dan lo berisik. DIEM LO."
+Nihilus marah. Sebagai wujud ke━</textarea>
+
+ <div class="actions">
+  <button id="copyAll">COPY ALL TEXT</button>
+  <button id="saveText">SAVE TEXT</button>
+  <button id="resetText">RESET TEXT</button>
+  <button id="copyPrompt">COPY PROMPT</button>
+ </div>
+ <p id="message" style="color:#00ff9d;margin-top:12px"></p>
+</section>
+
+<section id="support" class="hidden">
+ <h2>SUPPORT CENTER</h2>
+ <div class="card">
+  <h3>NEED HELP?</h3>
+  <p>Butuh bantuan menggunakan LYX?</p>
+  <p>Hubungi Admin DITDUT:</p>
+  <h3 style="color:#00ff9d">+62 878-9185-8403</h3>
+  <button id="whatsapp">CHAT WHATSAPP</button>
+ </div>
+</section>
+
+<section id="about" class="hidden">
+ <h2>ABOUT LYX</h2>
+ <div class="card">
+  <div class="logo">LYX</div>
+  <h3>DITDUT PRIVATE EDITION</h3>
+  <p>Creator: Damar</p>
+  <p>Admin: chesi</p>
+  <p>Moderator: Radit</p>
+  <p>Version: 9.0.0</p>
+  <p>Platform: Android / Desktop</p>
+  <p>Type: AI Prompt Manager</p>
+  <p>Intro: Custom MP4 Video</p>
+ </div>
+</section>
+
+</main>
+</div>
+
+<footer>LYX AI V9 © 2026 | POWERED BY DITDUT</footer>
+
+<script>
+"use strict";
+
+const PASSWORD="13524";
+const WA="6287891858403";
+const $=id=>document.getElementById(id);
+
+const originalText=$("prompt").value;
+let loginBusy=false;
+let videoTimer=null;
+
+/* LOGIN */
+$("loginForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+ if(loginBusy)return;
+
+ if($("password").value!==PASSWORD){
+  $("error").textContent="ACCESS DENIED — PASSWORD SALAH!";
+  $("password").value="";
+  return;
+ }
+
+ loginBusy=true;
+ $("error").textContent="";
+ $("login").classList.add("hidden");
+
+ const video=$("introVideo");
+ $("videoIntro").classList.add("active");
+ $("videoStatus").textContent="INITIALIZING...";
+
+ video.pause();
+ video.currentTime=0;
+
+ try{
+  await video.play();
+ }catch(error){
+  console.warn("Video gagal diputar:",error);
+  $("videoStatus").textContent="VIDEO TIDAK DAPAT DIPUTAR";
+ }
+
+ videoTimer=setTimeout(enterHome,15000);
+});
+
+/* MASUK HOME */
+function enterHome(){
+ if(videoTimer){
+  clearTimeout(videoTimer);
+  videoTimer=null;
+ }
+
+ $("introVideo").pause();
+ $("videoIntro").classList.remove("active");
+ $("app").classList.remove("hidden");
+
+ $("password").value="";
+ loginBusy=false;
+
+ page("home",document.querySelector('[data-page="home"]'));
+}
+
+/* NAVIGATION */
+function page(id,button){
+ document.querySelectorAll("main section").forEach(s=>{
+  s.classList.add("hidden");
+ });
+
+ const target=$(id);
+ if(!target)return;
+
+ target.classList.remove("hidden");
+
+ document.querySelectorAll(".sidebar button[data-page]")
+ .forEach(b=>b.classList.remove("active"));
+
+ if(button)button.classList.add("active");
+}
+
+document.querySelectorAll(".sidebar button[data-page]")
+.forEach(button=>{
+ button.addEventListener("click",()=>{
+  page(button.dataset.page,button);
+ });
+});
+
+$("openTerminal").addEventListener("click",()=>{
+ page("terminal",document.querySelector('[data-page="terminal"]'));
+ $("command").focus();
+});
+
+/* TERMINAL */
+function terminalLine(text,color){
+ const line=document.createElement("div");
+ line.textContent=text;
+ if(color)line.style.color=color;
+ $("terminalOutput").appendChild(line);
+ $("terminalOutput").scrollTop=$("terminalOutput").scrollHeight;
+}
+
+function runCommand(){
+ const input=$("command");
+ const cmd=input.value.trim().toLowerCase();
+ if(!cmd)return;
+
+ terminalLine("> "+cmd,"white");
+ input.value="";
+
+ if(cmd==="clear"){
+  $("terminalOutput").textContent="";
+  terminalLine("> TERMINAL CLEARED");
+  return;
+ }
+
+ switch(cmd){
+  case "help":
+   terminalLine("help - Daftar perintah");
+   terminalLine("status - Status sistem");
+   terminalLine("creator - Nama creator");
+   terminalLine("version - Versi sistem");
+   terminalLine("about - Informasi LYX");
+   terminalLine("support - Pusat bantuan");
+   terminalLine("time - Waktu perangkat");
+   terminalLine("clear - Bersihkan terminal");
+   break;
+  case "status":
+   terminalLine("SYSTEM ONLINE","#00ff9d");
+   terminalLine("CORE ACTIVE","#00ff9d");
+   break;
+  case "creator":
+   terminalLine("CREATED BY DITDUT");
+   break;
+  case "version":
+   terminalLine("LYX AI V9.0.0");
+   break;
+  case "about":
+   terminalLine("LYX AI - DITDUT PRIVATE EDITION");
+   break;
+  case "time":
+   terminalLine(new Date().toLocaleString("id-ID"));
+   break;
+  case "support":
+   page("support",document.querySelector('[data-page="support"]'));
+   break;
+  default:
+   terminalLine("UNKNOWN COMMAND. Type help.");
+ }
+}
+
+$("runCommand").addEventListener("click",runCommand);
+$("command").addEventListener("keydown",e=>{
+ if(e.key==="Enter")runCommand();
+});
+
+/* COPY */
+async function copyText(text){
+ if(navigator.clipboard && window.isSecureContext){
+  await navigator.clipboard.writeText(text);
+  return;
+ }
+
+ const temp=document.createElement("textarea");
+ temp.value=text;
+ temp.style.position="fixed";
+ temp.style.opacity="0";
+ document.body.appendChild(temp);
+ temp.select();
+
+ const ok=document.execCommand("copy");
+ temp.remove();
+ if(!ok)throw new Error("Copy gagal");
+}
+
+async function copyAll(){
+ try{
+  await copyText($("prompt").value);
+  $("message").textContent="✓ BERHASIL MENYALIN SELURUH TEKS!";
+ }catch(error){
+  $("message").textContent="Copy gagal. Silakan salin manual.";
+ }
+}
+
+$("copyAll").addEventListener("click",copyAll);
+$("copyPrompt").addEventListener("click",copyAll);
+
+/* SAVE */
+$("saveText").addEventListener("click",()=>{
+ try{
+  localStorage.setItem("lyx_saved_text",$("prompt").value);
+  $("message").textContent="✓ TEXT SAVED SUCCESSFULLY";
+ }catch(error){
+  $("message").textContent="Gagal menyimpan teks.";
+ }
+});
+
+/* RESET */
+$("resetText").addEventListener("click",()=>{
+ if(!confirm("Kembalikan prompt ke teks awal?"))return;
+ $("prompt").value=originalText;
+ $("message").textContent="✓ TEXT RESET";
+});
+
+/* LOAD */
+try{
+ const saved=localStorage.getItem("lyx_saved_text");
+ if(saved!==null)$("prompt").value=saved;
+}catch(error){
+ console.warn("Storage unavailable");
+}
+
+/* WHATSAPP */
+$("whatsapp").addEventListener("click",()=>{
+ const message="Halo Admin DITDUT, saya membutuhkan bantuan LYX AI.";
+ window.open(
+  "https://wa.me/"+WA+"?text="+encodeURIComponent(message),
+  "_blank"
+ );
+});
+
+/* LOGOUT */
+$("logout").addEventListener("click",()=>{
+ if(!confirm("Yakin ingin logout dari LYX AI?"))return;
+
+ if(videoTimer){
+  clearTimeout(videoTimer);
+  videoTimer=null;
+ }
+
+ $("introVideo").pause();
+ $("videoIntro").classList.remove("active");
+ $("app").classList.add("hidden");
+ $("login").classList.remove("hidden");
+
+ $("password").value="";
+ $("error").textContent="";
+ loginBusy=false;
+
+ $("terminalOutput").innerHTML=
+  "&gt; LYX CORE INITIALIZED<br>&gt; SYSTEM READY<br>&gt; Type help for assistance.";
+
+ page("home",document.querySelector('[data-page="home"]'));
+});
+
+/* CLOCK */
+function updateClock(){
+ $("clock").textContent=new Date().toLocaleTimeString("id-ID");
+}
+updateClock();
+setInterval(updateClock,1000);
+
+</script>
+</body>
+</html>
+
+
+ 
+
+
+
